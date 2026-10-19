@@ -77,7 +77,9 @@ pnpm build          # production builds
 node scripts/check-bundle-budget.mjs apps/web/.next budgets.json   # after a web build
 ```
 
-The server's RAG tests need `docker compose up -d`; they skip themselves when the database is unreachable.
+The server's RAG tests need `docker compose up -d`. Locally they skip themselves when the database is
+unreachable; in CI (`CI` set) they fail instead. `DATABASE_URL` is declared in `turbo.json` so Turborepo
+forwards it to the tests.
 
 ### Configuration
 
@@ -125,7 +127,9 @@ nothing pending.
 
 **Verified**
 - All 6 packages typecheck; 30 tests pass (21 game-state, 7 server, 2 web).
-- The GitHub Actions workflow passes on `main` (install, typecheck, tests, web build, bundle budget).
+- The GitHub Actions workflow passes on `main` (install, typecheck, tests, web build, bundle budget). It runs the
+  RAG integration tests against a pgvector service container, and in CI they fail rather than skip if the
+  database is unreachable.
 - Web production build works; the budget check passes and fails correctly (including for routes without a budget).
 - NPC dialogue streams end to end in a browser, with retrieval: both the web app and the mobile app's code.
 - Party movement converges between two real browser pages; contested cells and duplicate or spoofed
@@ -137,8 +141,6 @@ nothing pending.
   chat screen. There is no inventory, map or party screen on mobile yet.
 - **Real Claude replies**: only the mock path has been run, so whether Claude stays consistent with the lore is untested.
 - **AWS**: `infra/cloudfront/main.tf` has never been validated or applied, and nothing yet uploads build output to S3.
-- **RAG tests in CI**: the GitHub Actions workflow passes, but the runner has no Postgres, so the 3 retrieval
-  integration tests skip themselves there. They only run locally with `docker compose up -d`.
 - **Page-speed metrics**: LCP and INP were not measured on a deployed site. The Chrome numbers above are Event
   Timing durations from a local run.
 - Party state is a single in-memory room: no persistence, no multiple parties, no auth. Player IDs are
