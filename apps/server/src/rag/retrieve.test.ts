@@ -3,12 +3,13 @@ import { migrate, pool } from "./db";
 import { buildSystemPrompt, ingestLore, recordExchange, retrieve } from "./retrieve";
 
 // Integration test: needs `docker compose up -d` and downloads the embedding model on first run.
+// Locally it skips when the database is unreachable; in CI a missing database must fail the build.
 const dbUp = await pool.query("SELECT 1").then(
   () => true,
   () => false,
 );
 
-describe.skipIf(!dbUp)("RAG retrieval", () => {
+describe.skipIf(!dbUp && !process.env.CI)("RAG retrieval", () => {
   beforeAll(async () => {
     await migrate();
     await ingestLore();

@@ -8,6 +8,25 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: earthquest
+          POSTGRES_PASSWORD: earthquest
+          POSTGRES_DB: earthquest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U earthquest"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgres://earthquest:earthquest@localhost:5432/earthquest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +41,13 @@ jobs:
 
       - run: pnpm typecheck
 
-      # Integration tests for the RAG pipeline need pgvector; they skip themselves when it is absent.
+      # The RAG tests download the ~25 MB embedding model on first use; cache it between runs.
+      - uses: actions/cache@v4
+        with:
+          path: node_modules/@xenova/transformers/.cache
+          key: embedding-model-v1
+
+      # Runs the RAG integration tests against the pgvector service above (they fail, not skip, in CI).
       - run: pnpm test
 
       - run: pnpm --filter @earthquest/web build
