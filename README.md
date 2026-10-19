@@ -125,6 +125,7 @@ nothing pending.
 
 **Verified**
 - All 6 packages typecheck; 30 tests pass (21 game-state, 7 server, 2 web).
+- The GitHub Actions workflow passes on `main` (install, typecheck, tests, web build, bundle budget).
 - Web production build works; the budget check passes and fails correctly (including for routes without a budget).
 - NPC dialogue streams end to end in a browser, with retrieval: both the web app and the mobile app's code.
 - Party movement converges between two real browser pages; contested cells and duplicate or spoofed
@@ -136,7 +137,8 @@ nothing pending.
   chat screen. There is no inventory, map or party screen on mobile yet.
 - **Real Claude replies**: only the mock path has been run, so whether Claude stays consistent with the lore is untested.
 - **AWS**: `infra/cloudfront/main.tf` has never been validated or applied, and nothing yet uploads build output to S3.
-- **GitHub Actions**: `.github/workflows/ci.yml` parses but has never run (this folder is not a git repository yet).
+- **RAG tests in CI**: the GitHub Actions workflow passes, but the runner has no Postgres, so the 3 retrieval
+  integration tests skip themselves there. They only run locally with `docker compose up -d`.
 - **Page-speed metrics**: LCP and INP were not measured on a deployed site. The Chrome numbers above are Event
   Timing durations from a local run.
 - Party state is a single in-memory room: no persistence, no multiple parties, no auth. Player IDs are
