@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="32" viewBox="0 0 128 32">
+  <!-- 4 sprites, 32x32 each, in item-kind order: weapon, armor, consumable, quest -->
+  <g fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#d0d7de">
+      <path d="M8 24 L24 8"/><path d="M20 8 L24 8 L24 12"/><path d="M6 22 L10 26"/>
+    </g>
+    <g stroke="#6fa8dc" transform="translate(32 0)">
+      <path d="M16 6 L25 9 V16 C25 21 21 25 16 27 C11 25 7 21 7 16 V9 Z"/>
+    </g>
+    <g stroke="#e06666" transform="translate(64 0)">
+      <path d="M12 6 H20"/><path d="M13 6 V11 L8 24 C8 26 9 27 11 27 H21 C23 27 24 26 24 24 L19 11 V6"/>
+    </g>
+    <g stroke="#f1c232" transform="translate(96 0)">
+      <path d="M16 6 L18.5 13 L26 13.5 L20 18 L22 25.5 L16 21.5 L10 25.5 L12 18 L6 13.5 L13.5 13 Z"/>
+    </g>
+  </g>
+</svg>

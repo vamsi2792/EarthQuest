@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+
+      # Integration tests for the RAG pipeline need pgvector; they skip themselves when it is absent.
+      - run: pnpm test
+
+      - run: pnpm --filter @earthquest/web build
+
+      # Fails the job when any route's gzipped first-load JS exceeds budgets.json,
+      # and prints the per-route table in the job summary.
+      - run: node scripts/check-bundle-budget.mjs apps/web/.next budgets.json
